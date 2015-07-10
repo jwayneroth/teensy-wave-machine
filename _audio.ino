@@ -190,7 +190,7 @@ float speaker_vol = 29;
 */
 void setupAudio() {
 	
-	AudioMemory(80);
+	AudioMemory(90);
 	
 	audioShield.enable();
 	
@@ -253,5 +253,22 @@ void loopAudio() {
 	mixer_last.gain(1, drone2.computeNoise( *lfo_vals[1] ) );
 	mixer_last.gain(2, drone3.computeNoise( *lfo_vals[2] ) );
 	mixer_last.gain(3, drone4.computeNoise( *lfo_vals[3] ) );
+	
+	/*
+	Serial.print("CPU: ");
+	Serial.print("sweep1=");
+	Serial.print(sweep1.processorUsage());
+	Serial.print(", ");
+	Serial.print(sweep1.processorUsageMax());
+	Serial.print(" all=");
+	Serial.print(AudioProcessorUsage());
+	Serial.print(",");
+	Serial.print(AudioProcessorUsageMax());
+	Serial.print("\tMemory: ");
+	Serial.print(AudioMemoryUsage());
+	Serial.print(",");
+	Serial.print(AudioMemoryUsageMax());
+	Serial.println();
+	*/
 	
 }
