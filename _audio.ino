@@ -190,7 +190,7 @@ float speaker_vol = 29;
 */
 void setupAudio() {
 	
-	AudioMemory(90);
+	AudioMemory(80);
 	
 	audioShield.enable();
 	
