@@ -200,6 +200,9 @@ void setupAudio() {
 	
 	audioShield.enhanceBassEnable();
 	
+	pink.amplitude(.01);
+	white.amplitude(.01);
+	
 	drone1.setup();
 	drone2.setup();
 	drone3.setup();

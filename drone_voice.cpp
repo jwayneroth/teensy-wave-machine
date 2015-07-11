@@ -30,7 +30,7 @@
 #define SWEEP_FREQUENCY_MAX_BOTTOM 400
 #define SWEEP_FREQUENCY_MAX_TOP 1600
 
-#define SWEEP_INCREMENT_MIN 10
+#define SWEEP_INCREMENT_MIN 1
 #define SWEEP_INCREMENT_MAX 200
 
 /*
@@ -86,7 +86,7 @@ DroneVoice::DroneVoice(
 	_sine_filter->resonance(_resonance);
 	_sweep_filter->resonance(_resonance);
 	
-	_sweep_freq_max = SWEEP_FREQUENCY_MAX_BOTTOM;
+	_sweep_freq_max = 800;
 	
 }
 
@@ -96,14 +96,14 @@ DroneVoice::DroneVoice(
 void DroneVoice::setup() {
 	
 	_sine->begin(WAVEFORM_SINE);
-	_sweep->begin(WAVEFORM_TRIANGLE);
+	_sweep->begin(WAVEFORM_SINE);//(WAVEFORM_TRIANGLE);
 	
 	_sweep->sweepFrequencyMax( _sweep_freq_max );
 	
-	_pink->amplitude(.01);
-	_white->amplitude(.01);
-	_sine->amplitude(.01);
-	_sweep->amplitude(.01);
+	//_pink->amplitude(.01);
+	//_white->amplitude(.01);
+	_sine->amplitude(0);
+	_sweep->amplitude(0);
 	
 }
 
@@ -151,6 +151,23 @@ void DroneVoice::incrementSource() {
 	_source++;
 	
 	if( _source > 3 ) _source = 0;
+	
+	if( _source == 2 ) {
+	
+		_sine->amplitude(.01);
+		_sweep->amplitude(0);
+	
+	}else if( _source == 3 ) {
+	
+		_sine->amplitude(0);
+		_sweep->amplitude(.01);
+	
+	}else {
+	
+		_sine->amplitude(0);
+		_sweep->amplitude(0);
+	
+	}
 	
 	Serial.println("DroneVoice::incrementSource");
 	Serial.print("\t _source: ");Serial.println(_source);
