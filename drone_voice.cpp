@@ -228,7 +228,7 @@ void DroneVoice::setAmpMin( int16_t val ) {
 }
 
 /*
- * getAmpMax
+ * getAmp
 */
 uint16_t DroneVoice::getAmp() {
 	

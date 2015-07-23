@@ -106,8 +106,9 @@ void loopDisplay() {
 void displayMenu() {
 	
 	if(menu_mode == 4) {
-	
-		//display.print('M');
+		
+		display.setCursor(32, 57);
+		display.print("save");
 	
 	}else {
 		
@@ -367,7 +368,7 @@ void renderSignals() {
 			
 			wave_x = map( *lfo_vals[i], 128, -128, 128 - wave_width, 0 );
 			
-			cps = (float)map( *lfo_vals[i], -128, 128, 0, 100 ) / 100.0;
+			//cps = (float)map( *lfo_vals[i], -128, 128, 0, 100 ) / 100.0;
 	
 			for( j = wave_x; j < wave_x + wave_width; j++) {
 			

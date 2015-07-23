@@ -20,6 +20,8 @@ MultiPot pot_two( POT_TWO, LED_TWO, 6 );
 MultiPot pot_three( POT_THREE, LED_THREE, 6 );
 MultiPot pot_four( POT_FOUR, LED_FOUR, 6 );
 
+MultiPot * multi_pots[] = { &pot_one, &pot_two, &pot_three, &pot_four };
+
 boolean button_one_pressed = 0;
 boolean button_two_pressed = 0;
 boolean button_three_pressed = 0;
@@ -45,10 +47,7 @@ void setupUI() {
 	pot_three.setCurrentPot(menu_mode);
 	pot_four.setCurrentPot(menu_mode);
 	
-	//pot_one.setPot( 1, EEPROM.read(0) * 4 );
-	//pot_two.setPot( 1, EEPROM.read(1) * 4);
-	//pot_three.setPot( 1, EEPROM.read(2) * 4);
-	//pot_four.setPot( 1, EEPROM.read(3) * 4);
+	loadUIState();
 	
 }
 
@@ -88,7 +87,7 @@ void checkButtons() {
 	
 	}else {
 	
-		//checkMenuButtons();
+		checkMenuButtons();
 	
 	}
 
@@ -243,11 +242,13 @@ void checkMenuButtons() {
 		
 			Serial.println("two pressed: ");
 			
+			saveUIState();
+			
 			button_two_pressed = 0;
 		
 		}
 	}
-	
+	/*
 	if( digitalRead(BTN_THREE) == HIGH ) { button_three_pressed = 1; }
 	else {
 		if(button_three_pressed) {
@@ -270,7 +271,7 @@ void checkMenuButtons() {
 		
 		}
 	}
-	
+	*/
 }
 
 /*
@@ -321,6 +322,79 @@ void droneSignalSettings() {
 	if ( pot_four.hasNewReading() == 1  ) {
 		
 		drones[menu_mode]->setFrequency( pot_four.getPot(menu_mode) );
+	
+	}
+	
+}
+
+
+/*
+ * saveUIState
+*/
+void saveUIState() {
+	
+	Serial.println("saveUIState");
+	
+	uint16_t i, e1, e2, e3, e4;
+	
+	//save pot vals for three latter drone voices
+	for( i=0; i<3; i++) {
+		
+		e1 = pot_one.getPot(i+1);
+		e2 = pot_two.getPot(i+1);
+		e3 = pot_three.getPot(i+1);
+		e4 = pot_four.getPot(i+1);
+		
+		EEPROM.write(( i * 4 + 0 ), e1/4 );
+		EEPROM.write(( i * 4 + 1 ), e2/4 );
+		EEPROM.write(( i * 4 + 2 ), e3/4 );
+		EEPROM.write(( i * 4 + 3 ), e4/4 );
+		
+		Serial.print("\t voice ");Serial.print(i+1);Serial.print(" [");
+		Serial.print(e1);Serial.print(" , ");
+		Serial.print(e2);Serial.print(" , ");
+		Serial.print(e3);Serial.print(" , ");
+		Serial.print(e4);Serial.println(" ]");
+		
+	}
+	 
+}
+
+/*
+ * loadUIState
+ * loop over saved pot values
+*/
+void loadUIState() {
+	
+	Serial.println("loadUIState");
+	
+	uint16_t i, e1, e2, e3, e4;
+	
+	//load pot vals for three latter drone voices
+	for( i=0; i<3; i++) {
+		
+		e1 = EEPROM.read( i * 4 + 0 ) * 4;
+		e2 = EEPROM.read( i * 4 + 1 ) * 4;
+		e3 = EEPROM.read( i * 4 + 2 ) * 4;
+		e4 = EEPROM.read( i * 4 + 3 ) * 4;
+		
+		pot_one.setPot(   i+1, e1 );
+		pot_two.setPot(   i+1, e2 );
+		pot_three.setPot( i+1, e3 );
+		pot_four.setPot(  i+1, e4 );
+		
+		/*
+		Serial.print("\t voice ");Serial.print(i+1);Serial.print(" [");
+		Serial.print(e1);Serial.print(" , ");
+		Serial.print(e2);Serial.print(" , ");
+		Serial.print(e3);Serial.print(" , ");
+		Serial.print(e4);Serial.println(" ]");
+		*/
+		
+		setLFOFrequency( e1, ( i + 1 ));
+		drones[ i + 1 ]->setAmpMin( e2 );
+		drones[ i + 1 ]->setAmpFactor( e3 );
+		drones[ i + 1 ]->setFrequency( e4 );
 	
 	}
 	
@@ -386,5 +460,3 @@ void menuSettings() {
 	}
 	*/
 }
-
-//		EEPROM.write(0, pot_one.getPot(1) / 4 );
