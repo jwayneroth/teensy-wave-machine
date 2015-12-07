@@ -42,12 +42,12 @@ void setupUI() {
 	pinMode(LED_THREE, OUTPUT);
 	pinMode(LED_FOUR, OUTPUT);
 	
+	loadUIState();
+	
 	pot_one.setCurrentPot(menu_mode);
 	pot_two.setCurrentPot(menu_mode);
 	pot_three.setCurrentPot(menu_mode);
 	pot_four.setCurrentPot(menu_mode);
-	
-	loadUIState();
 	
 }
 
@@ -336,28 +336,45 @@ void saveUIState() {
 	Serial.println("saveUIState");
 	
 	uint16_t i, e1, e2, e3, e4;
+	uint16_t e5, e6, e7, e8, e9, e10;
 	
-	//save pot vals for three latter drone voices
-	for( i=0; i<3; i++) {
+	// save vals for all drone voices
+	for( i=0; i<4; i++) {
 		
-		e1 = pot_one.getPot(i+1);
-		e2 = pot_two.getPot(i+1);
-		e3 = pot_three.getPot(i+1);
-		e4 = pot_four.getPot(i+1);
+		// pot vals
+		e1 = pot_one.getPot(i);
+		e2 = pot_two.getPot(i);
+		e3 = pot_three.getPot(i);
+		e4 = pot_four.getPot(i);
 		
 		EEPROM.write(( i * 4 + 0 ), e1/4 );
 		EEPROM.write(( i * 4 + 1 ), e2/4 );
 		EEPROM.write(( i * 4 + 2 ), e3/4 );
 		EEPROM.write(( i * 4 + 3 ), e4/4 );
 		
-		Serial.print("\t voice ");Serial.print(i+1);Serial.print(" [");
+		Serial.print("\t voice ");Serial.print(i);Serial.print(" [");
 		Serial.print(e1);Serial.print(" , ");
 		Serial.print(e2);Serial.print(" , ");
 		Serial.print(e3);Serial.print(" , ");
 		Serial.print(e4);Serial.println(" ]");
 		
+		// TODO:: button vals: source, res, curve, display mode, sync, sweep max, 
+		/*
+		e5 = drones[i].getSource();
+		e6 = drones[i].getResonance();
+		e7 = drones[i].getCurve();
+		e8 = drones[i].getDisplayMode();
+		e9 = drones[i].getSync();
+		e10 = drones[i].getSweepFrequencyMax();
+		
+		EEPROM.write(( i * 4 + 0 ), e5/4 );
+		EEPROM.write(( i * 4 + 1 ), e6/4 );
+		EEPROM.write(( i * 4 + 2 ), e7/4 );
+		EEPROM.write(( i * 4 + 3 ), e8/4 );
+		EEPROM.write(( i * 4 + 3 ), e9/4 );
+		EEPROM.write(( i * 4 + 3 ), e10/4 );
+		*/
 	}
-	 
 }
 
 /*
@@ -370,31 +387,31 @@ void loadUIState() {
 	
 	uint16_t i, e1, e2, e3, e4;
 	
-	//load pot vals for three latter drone voices
-	for( i=0; i<3; i++) {
+	//load pot vals for all drone voices
+	for( i=0; i<4; i++) {
 		
 		e1 = EEPROM.read( i * 4 + 0 ) * 4;
 		e2 = EEPROM.read( i * 4 + 1 ) * 4;
 		e3 = EEPROM.read( i * 4 + 2 ) * 4;
 		e4 = EEPROM.read( i * 4 + 3 ) * 4;
 		
-		pot_one.setPot(   i+1, e1 );
-		pot_two.setPot(   i+1, e2 );
-		pot_three.setPot( i+1, e3 );
-		pot_four.setPot(  i+1, e4 );
+		pot_one.setPot( i, e1 );
+		pot_two.setPot( i, e2 );
+		pot_three.setPot( i, e3 );
+		pot_four.setPot( i, e4 );
 		
-		/*
-		Serial.print("\t voice ");Serial.print(i+1);Serial.print(" [");
+		///*
+		Serial.print("\t voice ");Serial.print(i);Serial.print(" [");
 		Serial.print(e1);Serial.print(" , ");
 		Serial.print(e2);Serial.print(" , ");
 		Serial.print(e3);Serial.print(" , ");
 		Serial.print(e4);Serial.println(" ]");
-		*/
+		//*/
 		
-		setLFOFrequency( e1, ( i + 1 ));
-		drones[ i + 1 ]->setAmpMin( e2 );
-		drones[ i + 1 ]->setAmpFactor( e3 );
-		drones[ i + 1 ]->setFrequency( e4 );
+		setLFOFrequency( e1, ( i ));
+		drones[ i ]->setAmpMin( e2 );
+		drones[ i ]->setAmpFactor( e3 );
+		drones[ i ]->setFrequency( e4 );
 	
 	}
 	

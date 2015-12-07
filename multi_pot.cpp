@@ -23,7 +23,7 @@ MultiPot::MultiPot( int8_t pin, int8_t led, int8_t values ) {
 		_values[i] =  0;
 	}
 	
-	_current_pot = 0;
+	_current_pot = -1;
 	_new_reading = 0;
 	_locked = 0;
 	

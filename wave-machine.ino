@@ -23,7 +23,7 @@ int8_t sub_menu_mode = 0;
 
 void setup()   {                
   
-	Serial.begin(9600); //while(!Serial)
+	Serial.begin(9600);
 	
 	//while(!Serial){}
 	
