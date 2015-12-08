@@ -21,6 +21,9 @@ volatile int * lfo_vals_init[] = { &lfo_one_val, &lfo_two_val, &lfo_three_val, &
 int8_t menu_mode = 0;
 int8_t sub_menu_mode = 0;
 
+byte save_flag = 0;
+byte reset_flag = 0;
+
 void setup()   {                
   
 	Serial.begin(9600);

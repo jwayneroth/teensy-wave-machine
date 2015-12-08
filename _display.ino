@@ -107,9 +107,15 @@ void displayMenu() {
 	
 	if(menu_mode == 4) {
 		
-		display.setCursor(32, 57);
-		display.print("save");
-	
+		if(save_flag) {
+			display.setCursor(0, 57);
+			display.print("save?");
+		}
+		if(reset_flag) {
+			display.setCursor(32, 57);
+			display.print("reset?");
+		}
+		
 	}else {
 		
 		display.setCursor( 0, 57 );

@@ -22,18 +22,22 @@ class DroneVoice {
 		
 		void
 			setup(),
-			setFrequency( int16_t val ),
-			setAmpMin( int16_t val ),
-			//setResonance( int16_t val ),
+			setFrequency( uint16_t val ),
+			setAmpMin( uint16_t val ),
 			incrementSource(),
+			setSource( int16_t source ),
 			incrementDisplayMode(),
-			toggleSynced(),
+			setDisplayMode( int16_t mode ),
 			incrementResonance(),
-			setAmpFactor( int16_t val ),
-			//setCurve( int16_t val );
+			setResonance( float val ),
+			setAmpFactor( uint16_t val ),
 			incrementCurve(),
-			incrementSweepFrequencyMax();
-		
+			setCurve( int16_t curve ),
+			incrementSweepFrequencyMax(),
+			setSweepFrequencyMax(uint16_t freq),
+			toggleSynced(),
+			setSynced( boolean synced);
+			
 		uint16_t
 			getAmp(),
 			getFrequency(),

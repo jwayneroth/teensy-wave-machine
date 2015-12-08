@@ -108,28 +108,20 @@ void DroneVoice::setup() {
 }
 
 /*
- * setResonance
+ * Resonance
 */
-/*void DroneVoice::setResonance( int16_t val ) {
+float DroneVoice::getResonance() {
+	return _resonance;
+}
 
-	_resonance =  (float)map( val, 0, 1023, RES_MIN, RES_MAX );
-	
-	Serial.println("DroneVoice::setResonance");
-	Serial.print("\t val: ");Serial.println(val);
-	Serial.print("\t resonance: ");Serial.println(_resonance);
-	
-	_filter->resonance( _resonance );
-
-}*/
-
-/*
- * incrementResonance
-*/
 void DroneVoice::incrementResonance() {
-	
 	_resonance += RES_INC;
-	
 	if( _resonance > RES_MAX ) _resonance = RES_MIN;
+	setResonance(_resonance);
+}
+
+void DroneVoice::setResonance( float val ) {
+	_resonance = val;
 	
 	Serial.println("DroneVoice::incrementResonance");
 	Serial.print("\t resonance: ");Serial.println(_resonance);
@@ -138,17 +130,30 @@ void DroneVoice::incrementResonance() {
 	_white_filter->resonance( _resonance );
 	_sine_filter->resonance( _resonance );
 	_sweep_filter->resonance( _resonance );
-	
+
 }
 
 /*
- * incrementSource
+ * Source
 */
 void DroneVoice::incrementSource() {
 	
 	_mixer->gain(_source, 0);
 	
 	_source++;
+	
+	if( _source > 3 ) _source = 0;
+	
+	setSource(_source);
+	
+	Serial.println("DroneVoice::incrementSource");
+	Serial.print("\t _source: ");Serial.println(_source);
+	
+}
+
+void DroneVoice::setSource( int16_t source ) {
+	
+	_source = source;
 	
 	if( _source > 3 ) _source = 0;
 	
@@ -169,17 +174,18 @@ void DroneVoice::incrementSource() {
 	
 	}
 	
-	Serial.println("DroneVoice::incrementSource");
-	Serial.print("\t _source: ");Serial.println(_source);
-	
 	_mixer->gain(_source, 1.0);
-	
+
 }
 
 /*
- * setFrequency
+ * Frequency
 */
-void DroneVoice::setFrequency( int16_t val ) {
+uint16_t DroneVoice::getFrequency() {	
+	return _filter_freq;
+}
+
+void DroneVoice::setFrequency( uint16_t val ) {
 	
 	_filter_freq = map( val, 0, 1023, FILTER_FREQ_MIN, FILTER_FREQ_MAX );
 	
@@ -197,27 +203,26 @@ void DroneVoice::setFrequency( int16_t val ) {
 	//_sweep->frequency( _filter_freq );
 	
 	if( _source == 3 ) _sweep->sweepIncrement( map( val, 0, 1023, SWEEP_INCREMENT_MIN, SWEEP_INCREMENT_MAX ));
-
 	
 }
 
 /*
  * setAmpFactor
 */
-void DroneVoice::setAmpFactor( int16_t val ) {
+void DroneVoice::setAmpFactor( uint16_t val ) {
 	
 	_amp_factor = (float)( map( val, 0, 1023, AMP_FACTOR_MIN, AMP_FACTOR_MAX ) / 100.00 );
 	
 	Serial.println("DroneVoice::setAmpFactor");
 	Serial.print("\t val: ");Serial.println(val);
 	Serial.print("\t amp_factor: ");Serial.println(_amp_factor);
-
+	
 }
 
 /*
  * setAmpMin
 */
-void DroneVoice::setAmpMin( int16_t val ) {
+void DroneVoice::setAmpMin( uint16_t val ) {
 	
 	_amp_min = map( val, 0, 1023, AMP_MIN_BOTTOM, AMP_MIN_TOP );
 	
@@ -246,116 +251,72 @@ int16_t DroneVoice::getSource() {
 }
 
 /*
- * getResonance
-*/
-float DroneVoice::getResonance() {
-	
-	return _resonance;
-	
-}
-
-/*
- * getCurve
-*/
-int16_t DroneVoice::getCurve() {
-	
-	return _curve_exp;
-	
-}
-
-/*
- * getDisplayMode
-*/
-int16_t DroneVoice::getDisplayMode() {
-	
-	return _display_mode;
-	
-}
-
-/*
- * getFrequency
-*/
-uint16_t DroneVoice::getFrequency() {
-	
-	return _filter_freq;
-	
-}
-
-/*
- * setCurve
-*/
-/*void DroneVoice::setCurve( int16_t val ) {
-	
-	_curve_exp = map( val, 0, 1023, CURVE_EXP_MIN, CURVE_EXP_MAX );
-	
-	Serial.println("DroneVoice::setCurve");
-	Serial.print("\t val: ");Serial.println(val);
-	Serial.print("\t curve: ");Serial.println(_curve_exp);
-	
-}*/
-
-/*
- * incrementCurve
+ * Curve
 */
 void DroneVoice::incrementCurve() {
-	
 	_curve_exp++;
-	
 	if( _curve_exp > CURVE_EXP_MAX ) _curve_exp = CURVE_EXP_MIN;
-	
 	Serial.println("DroneVoice::incrementCurve");
 	Serial.print("\t curve: ");Serial.println(_curve_exp);
-	
+}
+
+void DroneVoice::setCurve( int16_t curve ) {
+	_curve_exp = curve;
+}
+
+int16_t DroneVoice::getCurve() {	
+	return _curve_exp;
 }
 
 /*
- * toggleSynced
+ * Synced
 */
 void DroneVoice::toggleSynced() {
-
 	_synced = !_synced;
-
 }
 
-/*
- * getSynced
-*/
 boolean DroneVoice::getSynced() {
-
 	return _synced;
-
 }
 
+void DroneVoice::setSynced(boolean synced) {
+	_synced = synced;
+}
+
+
 /*
- * incrementDisplayMode
+ * DisplayMode
 */
 void DroneVoice::incrementDisplayMode() {
-
 	_display_mode++;
-	
 	if(_display_mode > 1) _display_mode = 0;
+}
 
+int16_t DroneVoice::getDisplayMode() {
+	return _display_mode;
+}
+
+void DroneVoice::setDisplayMode( int16_t mode) {
+	_display_mode = mode;
 }
 
 /*
- * setSweepFrequencyMax
+ * SweepFrequencyMax
 */
-void DroneVoice::incrementSweepFrequencyMax() {
-	
+void DroneVoice::incrementSweepFrequencyMax() {	
 	_sweep_freq_max += 200;
 	if( _sweep_freq_max > SWEEP_FREQUENCY_MAX_TOP ) _sweep_freq_max = SWEEP_FREQUENCY_MAX_BOTTOM;
-	
-	_sweep->sweepFrequencyMax( _sweep_freq_max );
-	
+
+	_sweep->sweepFrequencyMax( _sweep_freq_max );	
 }
 
-/*
- * getSweepFrequencyMax
-*/
 uint16_t DroneVoice::getSweepFrequencyMax() {
-	
 	return _sweep_freq_max;
-	
+}
+
+void DroneVoice::setSweepFrequencyMax(uint16_t freq) {
+	_sweep_freq_max = freq;
+	_sweep->sweepFrequencyMax( _sweep_freq_max );
 }
 
 /*

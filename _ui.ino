@@ -242,36 +242,35 @@ void checkMenuButtons() {
 		
 			Serial.println("two pressed: ");
 			
-			saveUIState();
+			if (save_flag) {
+				saveUIState();
+				save_flag = 0;
+			} else {
+				save_flag = 1;
+			}
 			
 			button_two_pressed = 0;
 		
 		}
 	}
-	/*
+	
 	if( digitalRead(BTN_THREE) == HIGH ) { button_three_pressed = 1; }
 	else {
 		if(button_three_pressed) {
 
 			Serial.println("three pressed: ");
 			
+			if (reset_flag) {
+				resetUIState();
+				reset_flag = 0;
+			} else {
+				reset_flag = 1;
+			}
 			
 			button_three_pressed = 0;
 		
 		}
 	}
-	
-	if( digitalRead(BTN_FOUR) == HIGH ) { button_four_pressed = 1; }
-	else {
-		if(button_four_pressed) {
-			
-			Serial.println("four pressed: ");
-		
-			button_four_pressed = 0;
-		
-		}
-	}
-	*/
 }
 
 /*
@@ -347,33 +346,38 @@ void saveUIState() {
 		e3 = pot_three.getPot(i);
 		e4 = pot_four.getPot(i);
 		
-		EEPROM.write(( i * 4 + 0 ), e1/4 );
-		EEPROM.write(( i * 4 + 1 ), e2/4 );
-		EEPROM.write(( i * 4 + 2 ), e3/4 );
-		EEPROM.write(( i * 4 + 3 ), e4/4 );
+		// button vals 
+		e5 = drones[i]->getSource();                   // 0 - 4
+		e6 = drones[i]->getResonance() * 100 / 4;      // 0.7 - 5.0
+		e7 = drones[i]->getCurve();                    // 1 - 6
+		e8 = drones[i]->getDisplayMode();              // 0 - 1
+		e9 = drones[i]->getSynced();                   // 0 - 1
+		e10 = drones[i]->getSweepFrequencyMax() / 100; // 400 - 1600
+		
+		EEPROM.write(( i * 10 + 0 ), e1/4 );
+		EEPROM.write(( i * 10 + 1 ), e2/4 );
+		EEPROM.write(( i * 10 + 2 ), e3/4 );
+		EEPROM.write(( i * 10 + 3 ), e4/4 );
+		
+		EEPROM.write(( i * 10 + 4 ), e5 );
+		EEPROM.write(( i * 10 + 5 ), e6 );
+		EEPROM.write(( i * 10 + 6 ), e7 );
+		EEPROM.write(( i * 10 + 7 ), e8 );
+		EEPROM.write(( i * 10 + 8 ), e9 );
+		EEPROM.write(( i * 10 + 9 ), e10 );
 		
 		Serial.print("\t voice ");Serial.print(i);Serial.print(" [");
 		Serial.print(e1);Serial.print(" , ");
 		Serial.print(e2);Serial.print(" , ");
 		Serial.print(e3);Serial.print(" , ");
-		Serial.print(e4);Serial.println(" ]");
+		Serial.print(e4);Serial.print(" , ");
+		Serial.print(e5);Serial.print(" , ");
+		Serial.print(e6);Serial.print(" , ");
+		Serial.print(e7);Serial.print(" , ");
+		Serial.print(e8);Serial.print(" , ");
+		Serial.print(e9);Serial.print(" , ");
+		Serial.print(e10);Serial.println(" ]");
 		
-		// TODO:: button vals: source, res, curve, display mode, sync, sweep max, 
-		/*
-		e5 = drones[i].getSource();
-		e6 = drones[i].getResonance();
-		e7 = drones[i].getCurve();
-		e8 = drones[i].getDisplayMode();
-		e9 = drones[i].getSync();
-		e10 = drones[i].getSweepFrequencyMax();
-		
-		EEPROM.write(( i * 4 + 0 ), e5/4 );
-		EEPROM.write(( i * 4 + 1 ), e6/4 );
-		EEPROM.write(( i * 4 + 2 ), e7/4 );
-		EEPROM.write(( i * 4 + 3 ), e8/4 );
-		EEPROM.write(( i * 4 + 3 ), e9/4 );
-		EEPROM.write(( i * 4 + 3 ), e10/4 );
-		*/
 	}
 }
 
@@ -386,35 +390,63 @@ void loadUIState() {
 	Serial.println("loadUIState");
 	
 	uint16_t i, e1, e2, e3, e4;
+	uint16_t e5, e6, e7, e8, e9, e10;
 	
-	//load pot vals for all drone voices
+	// pot vals
 	for( i=0; i<4; i++) {
 		
-		e1 = EEPROM.read( i * 4 + 0 ) * 4;
-		e2 = EEPROM.read( i * 4 + 1 ) * 4;
-		e3 = EEPROM.read( i * 4 + 2 ) * 4;
-		e4 = EEPROM.read( i * 4 + 3 ) * 4;
+		e1 = EEPROM.read( i * 10 + 0 ) * 4;
+		e2 = EEPROM.read( i * 10 + 1 ) * 4;
+		e3 = EEPROM.read( i * 10 + 2 ) * 4;
+		e4 = EEPROM.read( i * 10 + 3 ) * 4;
+		
+		// button vals 
+		e5 = EEPROM.read( i * 10 + 4 );
+		e6 = EEPROM.read( i * 10 + 5 );
+		e7 = EEPROM.read( i * 10 + 6 );
+		e8 = EEPROM.read( i * 10 + 7 );
+		e9 = EEPROM.read( i * 10 + 8 );
+		e10 = EEPROM.read( i * 10 + 9 );
 		
 		pot_one.setPot( i, e1 );
 		pot_two.setPot( i, e2 );
 		pot_three.setPot( i, e3 );
 		pot_four.setPot( i, e4 );
 		
-		///*
+		setLFOFrequency( e1, (i));
+		drones[i]->setAmpMin( e2 );
+		drones[i]->setAmpFactor( e3 );
+		drones[i]->setFrequency( e4 );
+		
+		drones[i]->setSource(e5);
+		drones[i]->setResonance((float)e6 / 100 * 4);
+		drones[i]->setCurve(e7);
+		drones[i]->setDisplayMode(e8);
+		drones[i]->setSynced(e9);
+		drones[i]->setSweepFrequencyMax(e10 * 100);
+		
 		Serial.print("\t voice ");Serial.print(i);Serial.print(" [");
 		Serial.print(e1);Serial.print(" , ");
 		Serial.print(e2);Serial.print(" , ");
 		Serial.print(e3);Serial.print(" , ");
-		Serial.print(e4);Serial.println(" ]");
-		//*/
+		Serial.print(e4);Serial.print(" , ");
+		Serial.print(e5);Serial.print(" , ");
+		Serial.print(e6);Serial.print(" , ");
+		Serial.print(e7);Serial.print(" , ");
+		Serial.print(e8);Serial.print(" , ");
+		Serial.print(e9);Serial.print(" , ");
+		Serial.print(e10);Serial.println(" ]");
 		
-		setLFOFrequency( e1, ( i ));
-		drones[ i ]->setAmpMin( e2 );
-		drones[ i ]->setAmpFactor( e3 );
-		drones[ i ]->setFrequency( e4 );
-	
 	}
 	
+}
+
+/**
+ * resetUIState
+
+*/
+void resetUIState() {
+
 }
 
 /*
