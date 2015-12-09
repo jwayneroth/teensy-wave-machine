@@ -115,6 +115,10 @@ void displayMenu() {
 			display.setCursor(32, 57);
 			display.print("reset?");
 		}
+		if(clear_flag) {
+			display.setCursor(70, 57);
+			display.print("clear?");
+		}
 		
 	}else {
 		

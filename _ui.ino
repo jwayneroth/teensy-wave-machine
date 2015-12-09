@@ -271,6 +271,24 @@ void checkMenuButtons() {
 		
 		}
 	}
+	
+	if( digitalRead(BTN_FOUR) == HIGH ) { button_four_pressed = 1; }
+	else {
+		if(button_four_pressed) {
+
+			Serial.println("four pressed: ");
+			
+			if (clear_flag) {
+				clearUIState();
+				clear_flag = 0;
+			} else {
+				clear_flag = 1;
+			}
+			
+			button_four_pressed = 0;
+		
+		}
+	}
 }
 
 /*
@@ -443,10 +461,52 @@ void loadUIState() {
 
 /**
  * resetUIState
-
 */
 void resetUIState() {
+	
+	loadUIState();
+	
+}
 
+/**
+ * clearUIState
+*/
+void clearUIState() {
+	
+	uint16_t i;
+	
+	// pot vals
+	for( i=0; i<4; i++) {
+		
+		pot_one.setPot( i, 0 );
+		pot_two.setPot( i, 0 );
+		pot_three.setPot( i, 0 );
+		pot_four.setPot( i, 0 );
+		
+		setLFOFrequency( 0, (i));
+		drones[i]->setAmpMin( 0 );
+		drones[i]->setAmpFactor( 0 );
+		drones[i]->setFrequency( 0 );
+		
+		drones[i]->setSource(0);
+		drones[i]->setResonance(0);
+		drones[i]->setCurve(1);
+		drones[i]->setDisplayMode(0);
+		drones[i]->setSynced(0);
+		drones[i]->setSweepFrequencyMax(400);
+		
+	}
+	
+	pot_one.setPot( 0, 100 );
+	pot_two.setPot( 0, 100 );
+	pot_three.setPot( 0, 500 );
+	pot_four.setPot( 0, 500 );
+		
+	setLFOFrequency( 100, (0));
+	drones[0]->setAmpMin( 100 );
+	drones[0]->setAmpFactor( 500 );
+	drones[0]->setFrequency( 500 );
+		
 }
 
 /*
@@ -457,6 +517,8 @@ void incrementMenuMode() {
 	menu_mode++;
 	
 	if( menu_mode >= MENU_MODE_TOTAL ) menu_mode = 0;
+	
+	save_flag = reset_flag = clear_flag = 0;
 	
 	pot_one.setCurrentPot(menu_mode);
 	pot_two.setCurrentPot(menu_mode);

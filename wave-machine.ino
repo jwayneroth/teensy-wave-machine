@@ -23,6 +23,7 @@ int8_t sub_menu_mode = 0;
 
 byte save_flag = 0;
 byte reset_flag = 0;
+byte clear_flag = 0;
 
 void setup()   {                
   
