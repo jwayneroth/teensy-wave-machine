@@ -340,7 +340,7 @@ void initWave() {
 */
 void renderWave() {
 	
-	if(menu_mode == 5) {
+	if(menu_mode == 4) {
 		renderSignals();
 		return;
 	}
