@@ -4,9 +4,12 @@
 #define OLED_MOSI 3 //9
 #define OLED_RESET 0 //13
 
-Adafruit_SSD1306 display(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
-#define PI 3.141592654
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
+
+//#define PI 3.141592654
 
 #define VPX 64
 #define VPY 16
@@ -60,7 +63,7 @@ int wave_center_offset_max = 0 - wave_width / 2;
 int wave_points[WAVE_POINTS_TOTAL];
 int base_lines[BASE_LINES_TOTAL];
 
-char * source_names[] = { "PINK", "WHITE", "SINE", "SWEEP" };
+const char * source_names[] = { "PINK", "WHITE", "SINE", "SWEEP" };
 
 float wave_height_range = 1.00;
 
@@ -312,7 +315,7 @@ void renderBase() {
 */
 void initWave() {
 	
-	int i, line_x, idx;
+	int i, line_x;
 	
 	for( i = 0; i < WAVE_POINTS_TOTAL/6; i++) {
 		
@@ -364,9 +367,9 @@ void renderWave() {
 */
 void renderSignals() {
 	
-	int i, j, py, sy, sh, wave_width, wave_x, wave_height;
+	int i, j, py, wave_width, wave_x, wave_height;
 
-	float cpp, cps, curve_alpha = 2.0;
+	float cpp, curve_alpha = 2.0; //, cps
 	
 	for(i = 0; i < 4; i++) {
 	

@@ -62,7 +62,7 @@ public:
 	AudioStream(0,NULL), tone_amp(0), tone_freq(0),
 	tone_phase(0), tone_width(0.25), tone_incr(0), tone_type(0),
 	tone_offset(0), arbdata(NULL), 
-	sweep_frequency(SWEEP_FREQUENCY_MIN), sweep_increment(100), sweep_freq_max(1000)
+	sweep_frequency(SWEEP_FREQUENCY_MIN), sweep_freq_max(1000), sweep_increment(100)
 	{ 
 	}
 

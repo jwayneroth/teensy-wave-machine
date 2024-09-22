@@ -441,6 +441,7 @@ void loadUIState() {
 		drones[i]->setCurve(e7);
 		drones[i]->setDisplayMode(e8);
 		drones[i]->setSynced(e9);
+		toggleLFOSync( i );
 		drones[i]->setSweepFrequencyMax(e10 * 100);
 		
 		Serial.print("\t voice ");Serial.print(i);Serial.print(" [");
@@ -493,6 +494,7 @@ void clearUIState() {
 		drones[i]->setCurve(1);
 		drones[i]->setDisplayMode(0);
 		drones[i]->setSynced(0);
+		toggleLFOSync( i );
 		drones[i]->setSweepFrequencyMax(400);
 		
 	}
